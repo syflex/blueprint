@@ -13,7 +13,7 @@ export async function runInSandbox(code, { log, error }) {
 
   const sb = await modal.sandboxes.create(app, image, {
     command: ["bun", "run", "-"],
-    timeout: SANDBOX_TIMEOUT_MS,
+    timeoutMs: SANDBOX_TIMEOUT_MS,
   });
 
   log("Sandbox created: " + sb.sandboxId);
