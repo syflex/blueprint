@@ -1,11 +1,11 @@
-import { runInSandbox } from "./modal-runner.js";
+import { runInSandbox, runDiagnostics } from "./modal-runner.js";
 
 export default async ({ req, res, log, error }) => {
   if (req.method !== "POST") {
     return res.json({ error: "Method not allowed" }, 405);
   }
 
-  const { code } = req.body;
+  const { code, action = "run" } = req.body;
 
   if (!code || typeof code !== "string") {
     return res.json({ error: "Missing 'code' field in request body" }, 400);
@@ -16,6 +16,12 @@ export default async ({ req, res, log, error }) => {
   }
 
   try {
+    if (action === "diagnose") {
+      log("Running diagnostics for code of length: " + code.length);
+      const result = await runDiagnostics(code, { log, error });
+      return res.json(result, 200);
+    }
+
     log("Executing sandbox for code of length: " + code.length);
     const result = await runInSandbox(code, { log, error });
     return res.json(result, 200);
