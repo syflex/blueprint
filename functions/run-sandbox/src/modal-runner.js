@@ -14,7 +14,7 @@ async function getApp(modal) {
 const getBunImage = (modal) => modal.images.fromRegistry("oven/bun:latest");
 
 const getTsImage = (modal) =>
-  getBunImage(modal).runCommands(["bun add -g typescript"]);
+  getBunImage(modal).dockerfileCommands(["RUN bun add -g typescript"]);
 
 export async function runInSandbox(code, { log, error }) {
   const modal = getModalClient();
