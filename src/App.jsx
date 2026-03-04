@@ -3,6 +3,7 @@ import "./App.css";
 import { useAuth } from "./hooks/useAuth";
 import IndexPage from "./pages/IndexPage";
 import DashboardPage from "./pages/DashboardPage";
+import SandboxPage from "./pages/SandboxPage";
 
 function App() {
   const [page, setPage] = useState("index");
@@ -11,6 +12,16 @@ function App() {
   async function handleLogout() {
     await auth.logout();
     setPage("index");
+  }
+
+  if (page === "sandbox" && auth.user) {
+    return (
+      <SandboxPage
+        user={auth.user}
+        onNavigate={setPage}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   if (page === "dashboard" && auth.user) {

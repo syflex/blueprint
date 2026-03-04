@@ -183,6 +183,7 @@ export default function IndexPage({ user, auth, onNavigate }) {
           user={user}
           onOpenModal={openModal}
           onShowDashboard={() => onNavigate("dashboard")}
+          onShowSandbox={() => onNavigate("sandbox")}
           onLogout={handleLogout}
         />
       </section>

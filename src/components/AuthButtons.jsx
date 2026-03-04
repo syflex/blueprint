@@ -1,4 +1,4 @@
-export default function AuthButtons({ user, onOpenModal, onShowDashboard, onLogout }) {
+export default function AuthButtons({ user, onOpenModal, onShowDashboard, onShowSandbox, onLogout }) {
   if (user) {
     return (
       <div className="mt-4 flex items-center gap-3">
@@ -8,6 +8,12 @@ export default function AuthButtons({ user, onOpenModal, onShowDashboard, onLogo
           className="cursor-pointer rounded-md border border-[#EDEDF0] bg-white px-2.5 py-1.5 text-sm text-[#2D2D31] hover:bg-[#F9F9FA]"
         >
           Dashboard
+        </button>
+        <button
+          onClick={onShowSandbox}
+          className="cursor-pointer rounded-md border border-[#EDEDF0] bg-white px-2.5 py-1.5 text-sm text-[#2D2D31] hover:bg-[#F9F9FA]"
+        >
+          Sandbox
         </button>
         <button
           onClick={onLogout}
