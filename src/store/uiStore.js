@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export const useUiStore = create((set) => ({
   selectedNodeId: null,
-  rightPanel: "config", // "config" | "code"
+  rightPanel: "config", // "config" | "code" | "validate"
   leftPanelOpen: true,
   showExportDialog: false,
 

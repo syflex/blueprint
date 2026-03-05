@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { temporal } from "zundo";
 import { applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/react";
 import { isConnectionValid, getConnectionSemantic } from "../registry/connectionRules";
 import { componentRegistry } from "../registry/componentRegistry";
@@ -10,7 +11,7 @@ function generateNodeId(type) {
   return `${type}-${nodeIdCounter}`;
 }
 
-export const useCanvasStore = create((set, get) => ({
+export const useCanvasStore = create(temporal((set, get) => ({
   nodes: [],
   edges: [],
 
@@ -100,5 +101,31 @@ export const useCanvasStore = create((set, get) => ({
 
   clearCanvas: () => {
     set({ nodes: [], edges: [] });
+  },
+
+  loadCanvas: (nodes, edges) => {
+    for (const n of nodes) {
+      const match = n.id.match(/-(\d+)$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num >= nodeIdCounter) nodeIdCounter = num + 1;
+      }
+    }
+    set({ nodes, edges });
+  },
+}), {
+  // Only track nodes and edges for undo/redo
+  partialize: (state) => ({
+    nodes: state.nodes,
+    edges: state.edges,
+  }),
+  limit: 50,
+  // Throttle history to avoid capturing every micro-change (e.g., dragging)
+  handleSet: (handleSet) => {
+    let timer;
+    return (state) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => handleSet(state), 500);
+    };
   },
 }));
