@@ -32,11 +32,11 @@ export default function CanvasPage() {
   const { ir } = useSystemGraph();
   const files = useMemo(() => generateFiles(ir), [ir]);
 
-  // Load project from URL param
-  const loadedRef = useRef(false);
+  // Load project from URL param (re-fires when projectId changes)
+  const loadedRef = useRef(null);
   useEffect(() => {
-    if (projectId && !loadedRef.current) {
-      loadedRef.current = true;
+    if (projectId && loadedRef.current !== projectId) {
+      loadedRef.current = projectId;
       setShowTemplatePicker(false);
       const project = loadProject(projectId);
       if (project?.canvas) {

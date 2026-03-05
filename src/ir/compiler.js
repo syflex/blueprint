@@ -27,6 +27,12 @@ export function compileToIR(nodes, edges) {
     functions: [],
     realtime: null,
     messaging: null,
+    teams: null,
+    oauth: null,
+    webhooks: null,
+    clientApps: [],
+    externalApis: [],
+    paymentGateway: null,
     connections: [],
   };
 
@@ -130,6 +136,70 @@ export function compileToIR(nodes, edges) {
       case "messaging":
         ir.messaging = {
           channels: config.channels || [],
+        };
+        break;
+
+      case "teams":
+        ir.teams = {
+          teams: (config.teams || [])
+            .filter((t) => t.name)
+            .map((t) => ({
+              name: t.name,
+              id: slugify(t.name),
+              roles: t.roles || ["owner", "admin", "member"],
+              customRoles: t.customRoles || [],
+            })),
+        };
+        break;
+
+      case "oauth":
+        ir.oauth = {
+          providers: config.providers || [],
+          redirectUrl: config.redirectUrl || "http://localhost:3000/auth/callback",
+        };
+        break;
+
+      case "webhooks":
+        ir.webhooks = {
+          webhooks: (config.webhooks || [])
+            .filter((w) => w.name)
+            .map((w) => ({
+              name: w.name,
+              id: slugify(w.name),
+              url: w.url || "",
+              events: w.events || [],
+              signatureSecret: w.signatureSecret || false,
+            })),
+        };
+        break;
+
+      case "clientApp":
+        ir.clientApps.push({
+          name: config.name || "web-app",
+          id: slugify(config.name || "web-app"),
+          framework: config.framework || "react",
+        });
+        break;
+
+      case "externalApi": {
+        const apis = (config.apis || [])
+          .filter((a) => a.name)
+          .map((a) => ({
+            name: a.name,
+            id: slugify(a.name),
+            baseUrl: a.baseUrl || "",
+            authMethod: a.authMethod || "api_key",
+            headers: (a.headers || []).filter((h) => h.key),
+          }));
+        ir.externalApis.push(...apis);
+        break;
+      }
+
+      case "paymentGateway":
+        ir.paymentGateway = {
+          provider: config.provider || "stripe",
+          webhookEvents: config.webhookEvents || [],
+          currency: config.currency || "usd",
         };
         break;
     }
