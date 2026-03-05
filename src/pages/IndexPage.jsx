@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { client } from "../lib/appwrite";
 import { AppwriteException } from "appwrite";
 import AppwriteSvg from "../../public/appwrite.svg";
 import ReactSvg from "../../public/react.svg";
 import AuthModal from "../components/AuthModal";
 import AuthButtons from "../components/AuthButtons";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function IndexPage({ user, auth, onNavigate }) {
+export default function IndexPage() {
+  const auth = useAuth();
+  const { user } = auth;
+  const navigate = useNavigate();
   const [detailHeight, setDetailHeight] = useState(55);
   const [logs, setLogs] = useState([]);
   const [status, setStatus] = useState("idle");
@@ -49,13 +54,13 @@ export default function IndexPage({ user, auth, onNavigate }) {
 
   async function handleLogin(email, password) {
     const success = await auth.login(email, password);
-    if (success) onNavigate("dashboard");
+    if (success) navigate("/dashboard");
     return success;
   }
 
   async function handleSignup(email, password, name) {
     const success = await auth.signup(email, password, name);
-    if (success) onNavigate("dashboard");
+    if (success) navigate("/dashboard");
     return success;
   }
 
@@ -182,8 +187,8 @@ export default function IndexPage({ user, auth, onNavigate }) {
         <AuthButtons
           user={user}
           onOpenModal={openModal}
-          onShowDashboard={() => onNavigate("dashboard")}
-          onShowSandbox={() => onNavigate("sandbox")}
+          onShowDashboard={() => navigate("/dashboard")}
+          onShowSandbox={() => navigate("/sandbox")}
           onLogout={handleLogout}
         />
       </section>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Functions } from "appwrite";
 import { client } from "../lib/appwrite";
 
@@ -9,7 +10,7 @@ const DEFAULT_CODE = `const greeting: string = "Hello from the sandbox!";
 console.log(greeting);
 `;
 
-export default function SandboxPage({ onNavigate, onLogout }) {
+export default function SandboxPage() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [output, setOutput] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -77,12 +78,12 @@ export default function SandboxPage({ onNavigate, onLogout }) {
           <h1 className="font-[Poppins] text-2xl font-light text-[#2D2D31]">
             Sandbox
           </h1>
-          <button
-            onClick={() => onNavigate("index")}
-            className="cursor-pointer text-sm text-[#97979B] hover:text-[#2D2D31]"
+          <Link
+            to="/"
+            className="text-sm text-[#97979B] no-underline hover:text-[#2D2D31]"
           >
             Back to home
-          </button>
+          </Link>
         </div>
 
         <textarea
