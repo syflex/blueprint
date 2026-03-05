@@ -1,12 +1,18 @@
 import { templates } from "../../templates/templateDefinitions";
 import { useCanvasStore } from "../../store/canvasStore";
 import { useUiStore } from "../../store/uiStore";
+import { useProjectStore } from "../../store/projectStore";
 
 export default function TemplatePicker() {
   const loadCanvas = useCanvasStore((s) => s.loadCanvas);
   const setShowTemplatePicker = useUiStore((s) => s.setShowTemplatePicker);
+  const createProject = useProjectStore((s) => s.createProject);
 
   const pick = (template) => {
+    // Create a named project for this template
+    const name = template.id === "blank" ? "Untitled Project" : `${template.name} Project`;
+    createProject(name);
+
     if (template.nodes.length > 0) {
       loadCanvas(template.nodes, template.edges);
     }

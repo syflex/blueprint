@@ -1,11 +1,13 @@
 import { componentRegistry, componentTypes } from "../../registry/componentRegistry";
 import { useCanvasStore } from "../../store/canvasStore";
 import { useUiStore } from "../../store/uiStore";
+import { useProjectStore } from "../../store/projectStore";
 
 export default function ComponentLibrary() {
   const nodes = useCanvasStore((s) => s.nodes);
   const clearCanvas = useCanvasStore((s) => s.clearCanvas);
   const setShowTemplatePicker = useUiStore((s) => s.setShowTemplatePicker);
+  const setCurrentProject = useProjectStore((s) => s.setCurrentProject);
 
   function onDragStart(e, type) {
     e.dataTransfer.setData("application/blueprint-node", type);
@@ -14,6 +16,7 @@ export default function ComponentLibrary() {
 
   function handleTemplates() {
     clearCanvas();
+    setCurrentProject(null);
     setShowTemplatePicker(true);
   }
 

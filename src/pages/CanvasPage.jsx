@@ -46,6 +46,13 @@ export default function CanvasPage() {
     }
   }, [projectId, loadProject, setShowTemplatePicker]);
 
+  // Auto-create project when nodes appear without one
+  useEffect(() => {
+    if (nodes.length > 0 && !currentProjectId && !projectId) {
+      createProject("Untitled Project");
+    }
+  }, [nodes.length, currentProjectId, projectId, createProject]);
+
   // Auto-save (debounced 2s)
   const saveTimerRef = useRef(null);
   const autoSave = useCallback(() => {
