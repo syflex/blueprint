@@ -1,14 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUiStore } from "../../store/uiStore";
+import { useProjectStore } from "../../store/projectStore";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const setShowExportDialog = useUiStore((s) => s.setShowExportDialog);
+  const currentProjectId = useProjectStore((s) => s.currentProjectId);
+  const projects = useProjectStore((s) => s.projects);
+  const renameProject = useProjectStore((s) => s.renameProject);
 
   const isCanvas =
     location.pathname === "/" || location.pathname.startsWith("/canvas");
+
+  const currentProject = currentProjectId
+    ? projects.find((p) => p.id === currentProjectId)
+    : null;
 
   return (
     <header className="flex items-center justify-between border-b border-[#EDEDF0] bg-white px-4 py-2">
@@ -24,6 +32,19 @@ export default function Header() {
             </span>
           </div>
         </Link>
+        {isCanvas && currentProject && (
+          <>
+            <span className="text-[#D8D8DB]">/</span>
+            <input
+              type="text"
+              value={currentProject.name}
+              onChange={(e) => renameProject(currentProjectId, e.target.value)}
+              className="w-40 border-none bg-transparent text-sm font-medium text-[#2D2D31] outline-none placeholder:text-[#D8D8DB] focus:underline focus:decoration-[#FD366E] focus:underline-offset-4"
+              placeholder="Project name"
+            />
+            <span className="text-[9px] text-[#97979B]">auto-saved</span>
+          </>
+        )}
         {isCanvas && (
           <button
             onClick={() => setShowExportDialog(true)}
