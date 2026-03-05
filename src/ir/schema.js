@@ -13,6 +13,12 @@
  * @property {FunctionIR[]} functions
  * @property {RealtimeIR|null} realtime
  * @property {MessagingIR|null} messaging
+ * @property {TeamsIR|null} teams
+ * @property {OAuthIR|null} oauth
+ * @property {WebhooksIR|null} webhooks
+ * @property {ClientAppIR[]} clientApps
+ * @property {ExternalApiIR[]} externalApis
+ * @property {PaymentGatewayIR|null} paymentGateway
  * @property {ConnectionIR[]} connections
  *
  * @typedef {Object} AuthIR
@@ -70,6 +76,33 @@
  *
  * @typedef {Object} MessagingIR
  * @property {string[]} channels
+ *
+ * @typedef {Object} TeamsIR
+ * @property {{ name: string, id: string, roles: string[], customRoles: string[] }[]} teams
+ *
+ * @typedef {Object} OAuthIR
+ * @property {string[]} providers
+ * @property {string} redirectUrl
+ *
+ * @typedef {Object} WebhooksIR
+ * @property {{ name: string, id: string, url: string, events: string[], signatureSecret: boolean }[]} webhooks
+ *
+ * @typedef {Object} ClientAppIR
+ * @property {string} name
+ * @property {string} id
+ * @property {string} framework
+ *
+ * @typedef {Object} ExternalApiIR
+ * @property {string} name
+ * @property {string} id
+ * @property {string} baseUrl
+ * @property {string} authMethod
+ * @property {{ key: string, value: string }[]} headers
+ *
+ * @typedef {Object} PaymentGatewayIR
+ * @property {string} provider
+ * @property {string[]} webhookEvents
+ * @property {string} currency
  *
  * @typedef {Object} ConnectionIR
  * @property {string} sourceId - node ID

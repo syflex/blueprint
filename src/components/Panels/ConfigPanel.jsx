@@ -7,6 +7,12 @@ import StorageConfig from "./StorageConfig";
 import FunctionsConfig from "./FunctionsConfig";
 import RealtimeConfig from "./RealtimeConfig";
 import MessagingConfig from "./MessagingConfig";
+import TeamsConfig from "./TeamsConfig";
+import OAuthConfig from "./OAuthConfig";
+import WebhooksConfig from "./WebhooksConfig";
+import ClientAppConfig from "./ClientAppConfig";
+import ExternalApiConfig from "./ExternalApiConfig";
+import PaymentGatewayConfig from "./PaymentGatewayConfig";
 
 const configPanels = {
   auth: AuthConfig,
@@ -15,6 +21,12 @@ const configPanels = {
   functions: FunctionsConfig,
   realtime: RealtimeConfig,
   messaging: MessagingConfig,
+  teams: TeamsConfig,
+  oauth: OAuthConfig,
+  webhooks: WebhooksConfig,
+  clientApp: ClientAppConfig,
+  externalApi: ExternalApiConfig,
+  paymentGateway: PaymentGatewayConfig,
 };
 
 export default function ConfigPanel() {

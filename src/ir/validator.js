@@ -107,5 +107,87 @@ export function validateIR(ir) {
     }
   }
 
+  // Teams without Auth
+  if (ir.teams && !ir.auth) {
+    issues.push({
+      level: "warning",
+      message: "Teams requires Auth — users must authenticate before joining teams",
+    });
+  }
+
+  // OAuth without Auth
+  if (ir.oauth && !ir.auth) {
+    issues.push({
+      level: "error",
+      message: "OAuth must connect to Auth — OAuth sessions require the Auth service",
+    });
+  }
+
+  // OAuth with no providers selected
+  if (ir.oauth && ir.oauth.providers.length === 0) {
+    issues.push({
+      level: "warning",
+      message: "OAuth has no providers selected — enable at least one OAuth provider",
+    });
+  }
+
+  // Webhooks with no events configured
+  if (ir.webhooks) {
+    for (const wh of ir.webhooks.webhooks) {
+      if (wh.events.length === 0) {
+        issues.push({
+          level: "warning",
+          message: `Webhook "${wh.name}" has no events — it won't be triggered`,
+        });
+      }
+      if (!wh.url) {
+        issues.push({
+          level: "error",
+          message: `Webhook "${wh.name}" has no URL`,
+        });
+      }
+    }
+  }
+
+  // External API validation
+  for (const api of ir.externalApis) {
+    if (!api.baseUrl) {
+      issues.push({
+        level: "error",
+        message: `External API "${api.name}" has no base URL`,
+      });
+    }
+  }
+
+  // Payment Gateway without Functions
+  if (ir.paymentGateway) {
+    const hasFnToPayment = ir.connections.some(
+      (c) =>
+        (c.sourceType === "functions" && c.targetType === "paymentGateway") ||
+        (c.sourceType === "paymentGateway" && c.targetType === "functions")
+    );
+    if (!hasFnToPayment) {
+      issues.push({
+        level: "warning",
+        message: "Payment Gateway has no Functions connection — payments require server-side processing",
+      });
+    }
+  }
+
+  // Client App without Auth
+  for (const app of ir.clientApps) {
+    const hasAuthConn = ir.connections.some(
+      (c) =>
+        (c.sourceType === "clientApp" && c.targetType === "auth") ||
+        (c.sourceType === "auth" && c.targetType === "clientApp")
+    );
+    if (!hasAuthConn && ir.auth) {
+      issues.push({
+        level: "warning",
+        message: `Client App "${app.name}" is not connected to Auth — users won't be able to sign in`,
+      });
+    }
+  }
+
   return issues;
 }

@@ -9,6 +9,16 @@ const semanticLabels = {
   crud_operations: "CRUD",
   file_operations: "Files",
   file_references: "File Refs",
+  team_membership: "Membership",
+  team_permissions: "Team Perms",
+  oauth_session: "OAuth",
+  client_auth: "Auth Flow",
+  client_invoke: "Invoke",
+  api_call: "API Call",
+  api_response: "Response",
+  payment_process: "Payment",
+  payment_webhook: "Pay Webhook",
+  payment_records: "Records",
 };
 
 export default function LabeledEdge({

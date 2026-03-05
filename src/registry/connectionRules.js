@@ -3,26 +3,57 @@
  * Each entry maps a source type to its valid target types with semantic meaning.
  */
 export const validConnections = {
+  // ── Appwrite Core ──────────────────────────────────────────
   auth: {
     database: { semantic: "auth_permissions", meaning: "Apply auth-based permissions to collections" },
     storage: { semantic: "auth_permissions", meaning: "Apply auth-based permissions to buckets" },
     functions: { semantic: "auth_context", meaning: "Pass user context to function execution" },
+    teams: { semantic: "team_membership", meaning: "Users join and manage teams" },
   },
   storage: {
     functions: { semantic: "event_trigger", meaning: "Trigger function on file upload/delete" },
+    webhooks: { semantic: "event_trigger", meaning: "Fire webhook on file events" },
   },
   functions: {
     messaging: { semantic: "send_notification", meaning: "Function sends email/push/SMS via Messaging" },
     database: { semantic: "crud_operations", meaning: "Function reads/writes documents in collections" },
     storage: { semantic: "file_operations", meaning: "Function reads/writes files in buckets" },
+    externalApi: { semantic: "api_call", meaning: "Function calls external API" },
+    paymentGateway: { semantic: "payment_process", meaning: "Function processes payments" },
+    webhooks: { semantic: "event_trigger", meaning: "Fire webhook on function events" },
   },
   database: {
     realtime: { semantic: "collection_subscriptions", meaning: "Subscribe to document changes in real time" },
     functions: { semantic: "event_trigger", meaning: "Trigger function on document create/update/delete" },
     storage: { semantic: "file_references", meaning: "Collection fields reference files in buckets" },
+    webhooks: { semantic: "event_trigger", meaning: "Fire webhook on document events" },
   },
   realtime: {},
   messaging: {},
+
+  // ── Appwrite Extended ──────────────────────────────────────
+  teams: {
+    database: { semantic: "team_permissions", meaning: "Apply team-based permissions to collections" },
+    storage: { semantic: "team_permissions", meaning: "Apply team-based permissions to buckets" },
+    functions: { semantic: "team_permissions", meaning: "Scope function access by team" },
+  },
+  oauth: {
+    auth: { semantic: "oauth_session", meaning: "Create auth session via OAuth provider" },
+  },
+  webhooks: {},
+
+  // ── Third-Party ────────────────────────────────────────────
+  clientApp: {
+    auth: { semantic: "client_auth", meaning: "Client handles authentication flow" },
+    functions: { semantic: "client_invoke", meaning: "Client invokes serverless functions" },
+  },
+  externalApi: {
+    functions: { semantic: "api_response", meaning: "API returns data to function" },
+  },
+  paymentGateway: {
+    functions: { semantic: "payment_webhook", meaning: "Payment provider triggers function via webhook" },
+    database: { semantic: "payment_records", meaning: "Store transaction records in database" },
+  },
 };
 
 /**
