@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppShell from "./components/Layout/AppShell";
-import IndexPage from "./pages/IndexPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import SandboxPage from "./pages/SandboxPage";
 import CanvasPage from "./pages/CanvasPage";
@@ -9,10 +11,19 @@ export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { path: "/", element: <IndexPage /> },
-      { path: "/dashboard", element: <DashboardPage /> },
-      { path: "/sandbox", element: <SandboxPage /> },
+      { path: "/", element: <LandingPage /> },
+      { path: "/login", element: <AuthPage /> },
       { path: "/canvas", element: <CanvasPage /> },
+      { path: "/canvas/:projectId", element: <CanvasPage /> },
+      {
+        path: "/dashboard",
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "/sandbox", element: <SandboxPage /> },
     ],
   },
 ]);

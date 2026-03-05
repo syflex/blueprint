@@ -78,7 +78,7 @@ export default function Header() {
               Canvas
             </Link>
             <Link
-              to="/"
+              to="/login"
               className="rounded-md border border-[#EDEDF0] px-2.5 py-1.5 text-sm text-[#2D2D31] no-underline hover:bg-[#F9F9FA]"
             >
               Sign in
