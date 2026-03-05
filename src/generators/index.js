@@ -7,8 +7,10 @@ import { generateCrudHooks } from "./database/crudHookGenerator";
 import { generateTypes } from "./database/typeGenerator";
 import { generateStorageFiles } from "./storage/storageGenerator";
 import { generateFunctionScaffolds } from "./functions/functionScaffoldGenerator";
+import { generateValidationSchemas } from "./database/validationSchemaGenerator";
 import { generateRealtimeFiles } from "./realtime/realtimeHookGenerator";
 import { generateMessagingFiles } from "./messaging/messagingHelperGenerator";
+import { generateReadme } from "./shared/readmeGenerator";
 
 /**
  * Generate all files from a SystemGraph IR.
@@ -34,6 +36,7 @@ export function generateFiles(ir) {
     files.push(...generateCollectionSetup(ir.database));
     files.push(...generateCrudHooks(ir.database));
     files.push(...generateTypes(ir.database));
+    files.push(...generateValidationSchemas(ir.database));
   }
 
   // Storage
@@ -55,6 +58,9 @@ export function generateFiles(ir) {
   if (ir.messaging) {
     files.push(...generateMessagingFiles(ir.messaging));
   }
+
+  // README
+  files.push(...generateReadme(ir));
 
   return files;
 }

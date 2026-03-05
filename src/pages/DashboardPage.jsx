@@ -20,7 +20,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link
-            to="/canvas"
+            to="/"
             className="rounded-md bg-[#FD366E] px-4 py-2 text-sm font-medium text-white no-underline hover:opacity-90"
           >
             + New Project
@@ -39,7 +39,7 @@ export default function DashboardPage() {
               Create your first project to start designing
             </p>
             <Link
-              to="/canvas"
+              to="/"
               className="mt-4 rounded-md bg-[#FD366E] px-4 py-2 text-sm text-white no-underline hover:opacity-90"
             >
               Create Project

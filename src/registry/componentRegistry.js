@@ -13,6 +13,8 @@ export const componentRegistry = {
     defaultConfig: {
       providers: ["email"],
       guestAccess: false,
+      sessionDuration: 365,
+      passwordPolicy: { minLength: 8, uppercase: false, numbers: false, specialChars: false },
     },
     portsIn: [],
     portsOut: ["database", "storage", "functions"],
@@ -27,8 +29,8 @@ export const componentRegistry = {
     defaultConfig: {
       collections: [],
     },
-    portsIn: ["auth"],
-    portsOut: ["realtime", "functions"],
+    portsIn: ["auth", "functions"],
+    portsOut: ["realtime", "functions", "storage"],
     maxInstances: null,
   },
   storage: {
@@ -40,7 +42,7 @@ export const componentRegistry = {
     defaultConfig: {
       buckets: [],
     },
-    portsIn: ["auth"],
+    portsIn: ["auth", "database", "functions"],
     portsOut: ["functions"],
     maxInstances: null,
   },
@@ -52,9 +54,11 @@ export const componentRegistry = {
     description: "Serverless functions",
     defaultConfig: {
       functions: [],
+      timeout: 15,
+      memory: 128,
     },
     portsIn: ["auth", "database", "storage", "messaging"],
-    portsOut: ["messaging"],
+    portsOut: ["messaging", "database", "storage"],
     maxInstances: null,
   },
   realtime: {

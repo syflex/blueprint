@@ -9,7 +9,10 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "../Nodes/nodeTypes";
+import LabeledEdge from "../Edges/LabeledEdge";
 import { useCanvasStore } from "../../store/canvasStore";
+
+const edgeTypes = { labeled: LabeledEdge };
 import { useUiStore } from "../../store/uiStore";
 import { componentRegistry } from "../../registry/componentRegistry";
 
@@ -75,6 +78,7 @@ function CanvasInner() {
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView={false}
         deleteKeyCode={["Backspace", "Delete"]}
         defaultEdgeOptions={{

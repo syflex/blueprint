@@ -7,44 +7,37 @@ export default function Header() {
   const location = useLocation();
   const setShowExportDialog = useUiStore((s) => s.setShowExportDialog);
 
-  const isCanvas = location.pathname.startsWith("/canvas");
+  const isCanvas =
+    location.pathname === "/" || location.pathname.startsWith("/canvas");
 
   return (
-    <header className="flex items-center justify-between border-b border-[#EDEDF0] bg-white px-4 py-3">
+    <header className="flex items-center justify-between border-b border-[#EDEDF0] bg-white px-4 py-2">
       <div className="flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2 no-underline">
           <img src="/appwrite.svg" alt="Blueprint" className="h-6 w-6" />
-          <span className="font-[Poppins] text-lg font-light text-[#2D2D31]">
-            Blueprint
-          </span>
+          <div className="flex flex-col">
+            <span className="font-[Poppins] text-lg leading-tight font-light text-[#2D2D31]">
+              Blueprint
+            </span>
+            <span className="text-[9px] tracking-wide text-[#97979B]">
+              Visual System Designer
+            </span>
+          </div>
         </Link>
         {isCanvas && (
-          <>
-            <span className="text-xs text-[#97979B]">Visual System Designer</span>
-            <button
-              onClick={() => setShowExportDialog(true)}
-              className="cursor-pointer rounded-md border border-[#EDEDF0] bg-white px-2.5 py-1.5 text-xs text-[#2D2D31] hover:bg-[#F9F9FA]"
-            >
-              <span className="icon-download mr-1" />
-              Export ZIP
-            </button>
-          </>
+          <button
+            onClick={() => setShowExportDialog(true)}
+            className="cursor-pointer rounded-md border border-[#EDEDF0] bg-white px-2.5 py-1.5 text-xs text-[#2D2D31] hover:bg-[#F9F9FA]"
+          >
+            <span className="icon-download mr-1" />
+            Export ZIP
+          </button>
         )}
       </div>
 
       <nav className="flex items-center gap-2">
         {user ? (
           <>
-            <Link
-              to="/canvas"
-              className={`rounded-md px-2.5 py-1.5 text-sm no-underline ${
-                isCanvas
-                  ? "bg-[#FD366E] text-white"
-                  : "border border-[#EDEDF0] text-[#2D2D31] hover:bg-[#F9F9FA]"
-              }`}
-            >
-              Canvas
-            </Link>
             <Link
               to="/dashboard"
               className={`rounded-md px-2.5 py-1.5 text-sm no-underline ${
@@ -68,14 +61,10 @@ export default function Header() {
         ) : (
           <>
             <Link
-              to="/canvas"
-              className={`rounded-md px-2.5 py-1.5 text-sm no-underline ${
-                isCanvas
-                  ? "bg-[#FD366E] text-white"
-                  : "border border-[#EDEDF0] text-[#2D2D31] hover:bg-[#F9F9FA]"
-              }`}
+              to="/about"
+              className="rounded-md px-2.5 py-1.5 text-sm text-[#97979B] no-underline hover:text-[#2D2D31]"
             >
-              Canvas
+              About
             </Link>
             <Link
               to="/login"

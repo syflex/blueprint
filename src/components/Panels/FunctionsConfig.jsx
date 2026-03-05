@@ -94,6 +94,79 @@ function FunctionEditor({ fn, onUpdate, onRemove }) {
               ))}
             </select>
           </div>
+          <div>
+            <label className="mb-1 block text-[10px] text-[#97979B]">Timeout (seconds)</label>
+            <input
+              type="number"
+              min={1}
+              max={900}
+              value={fn.timeout || 15}
+              onChange={(e) => onUpdate({ ...fn, timeout: Number(e.target.value) })}
+              className="w-full rounded border border-[#EDEDF0] px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#FDCB6E]"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] text-[#97979B]">Memory (MB)</label>
+            <select
+              value={fn.memory || 128}
+              onChange={(e) => onUpdate({ ...fn, memory: Number(e.target.value) })}
+              className="w-full rounded border border-[#EDEDF0] bg-white px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#FDCB6E]"
+            >
+              <option value={128}>128 MB</option>
+              <option value={256}>256 MB</option>
+              <option value={512}>512 MB</option>
+              <option value={1024}>1024 MB</option>
+            </select>
+          </div>
+          {/* Environment Variables */}
+          <div>
+            <label className="mb-1 block text-[10px] text-[#97979B]">Environment Variables</label>
+            {(fn.envVars || []).map((env, i) => (
+              <div key={i} className="mb-1.5 flex items-center gap-1">
+                <input
+                  type="text"
+                  value={env.key}
+                  onChange={(e) => {
+                    const envVars = [...(fn.envVars || [])];
+                    envVars[i] = { ...envVars[i], key: e.target.value };
+                    onUpdate({ ...fn, envVars });
+                  }}
+                  placeholder="KEY"
+                  className="w-20 rounded border border-[#EDEDF0] px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#FDCB6E] placeholder:text-[#D8D8DB]"
+                />
+                <span className="text-[10px] text-[#97979B]">=</span>
+                <input
+                  type="text"
+                  value={env.value}
+                  onChange={(e) => {
+                    const envVars = [...(fn.envVars || [])];
+                    envVars[i] = { ...envVars[i], value: e.target.value };
+                    onUpdate({ ...fn, envVars });
+                  }}
+                  placeholder="value"
+                  className="flex-1 rounded border border-[#EDEDF0] px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#FDCB6E] placeholder:text-[#D8D8DB]"
+                />
+                <button
+                  onClick={() => {
+                    const envVars = (fn.envVars || []).filter((_, j) => j !== i);
+                    onUpdate({ ...fn, envVars });
+                  }}
+                  className="cursor-pointer text-xs text-[#D8D8DB] hover:text-[#B31212]"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                const envVars = [...(fn.envVars || []), { key: "", value: "" }];
+                onUpdate({ ...fn, envVars });
+              }}
+              className="cursor-pointer text-xs text-[#FDCB6E] hover:underline"
+            >
+              + Add variable
+            </button>
+          </div>
         </div>
       )}
     </div>

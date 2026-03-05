@@ -46,7 +46,7 @@ export const useCanvasStore = create(temporal((set, get) => ({
     const newEdge = {
       ...connection,
       id: `${connection.source}->${connection.target}`,
-      type: "default",
+      type: "labeled",
       animated: true,
       data: semantic,
     };
