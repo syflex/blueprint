@@ -51,7 +51,7 @@ export default function Header() {
             className="cursor-pointer rounded-md border border-[#EDEDF0] bg-white px-2.5 py-1.5 text-xs text-[#2D2D31] hover:bg-[#F9F9FA]"
           >
             <span className="icon-download mr-1" />
-            Export ZIP
+            Export Artifact
           </button>
         )}
       </div>
