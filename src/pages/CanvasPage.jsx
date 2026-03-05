@@ -6,6 +6,7 @@ import ConfigPanel from "../components/Panels/ConfigPanel";
 import CodePreviewPanel from "../components/CodePreview/CodePreviewPanel";
 import ExportDialog from "../components/Export/ExportDialog";
 import ValidationPanel from "../components/Panels/ValidationPanel";
+import TemplatePicker from "../components/Canvas/TemplatePicker";
 import { useUiStore } from "../store/uiStore";
 import { useCanvasStore } from "../store/canvasStore";
 import { useProjectStore } from "../store/projectStore";
@@ -20,6 +21,8 @@ export default function CanvasPage() {
   const setRightPanel = useUiStore((s) => s.setRightPanel);
   const showExportDialog = useUiStore((s) => s.showExportDialog);
   const setShowExportDialog = useUiStore((s) => s.setShowExportDialog);
+  const showTemplatePicker = useUiStore((s) => s.showTemplatePicker);
+  const setShowTemplatePicker = useUiStore((s) => s.setShowTemplatePicker);
   const nodes = useCanvasStore((s) => s.nodes);
   const edges = useCanvasStore((s) => s.edges);
   const loadProject = useProjectStore((s) => s.loadProject);
@@ -34,13 +37,14 @@ export default function CanvasPage() {
   useEffect(() => {
     if (projectId && !loadedRef.current) {
       loadedRef.current = true;
+      setShowTemplatePicker(false);
       const project = loadProject(projectId);
       if (project?.canvas) {
         const store = useCanvasStore.getState();
         store.loadCanvas(project.canvas.nodes, project.canvas.edges);
       }
     }
-  }, [projectId, loadProject]);
+  }, [projectId, loadProject, setShowTemplatePicker]);
 
   // Auto-save (debounced 2s)
   const saveTimerRef = useRef(null);
@@ -99,6 +103,11 @@ export default function CanvasPage() {
           )}
         </div>
       </div>
+
+      {/* Template Picker */}
+      {showTemplatePicker && (
+        <TemplatePicker />
+      )}
 
       {/* Export Dialog */}
       {showExportDialog && (

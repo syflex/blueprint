@@ -29,21 +29,23 @@ export function use${name}() {
   const [documents, setDocuments] = useState<${typeName}[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
 
-  const list = useCallback(async (queries: string[] = []) => {
+  const list = useCallback(async (queries: string[] = [], limit = 25, offset = 0) => {
     setLoading(true);
     setError(null);
     try {
       const response = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
-        queries
+        [...queries, Query.limit(limit), Query.offset(offset)]
       );
       setDocuments(response.documents as unknown as ${typeName}[]);
-      return response.documents;
+      setTotal(response.total);
+      return response;
     } catch (err: any) {
       setError(err.message);
-      return [];
+      return { documents: [], total: 0 };
     } finally {
       setLoading(false);
     }
@@ -87,7 +89,7 @@ export function use${name}() {
     list();
   }, [list]);
 
-  return { documents, loading, error, list, get, create, update, remove };
+  return { documents, loading, error, total, list, get, create, update, remove };
 }
 `,
       language: "typescript",

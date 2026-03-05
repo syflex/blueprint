@@ -60,6 +60,23 @@ function CollectionEditor({ collection, onUpdate, onRemove }) {
 
       {expanded && (
         <div className="border-t border-[#EDEDF0] px-3 py-2">
+          {/* Permission Preset */}
+          <div className="mb-2">
+            <label className="mb-1 block text-[10px] text-[#97979B]">Permissions</label>
+            <select
+              value={collection.permissionPreset || "users"}
+              onChange={(e) => onUpdate({ ...collection, permissionPreset: e.target.value })}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full rounded border border-[#EDEDF0] bg-white px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#6C5CE7]"
+            >
+              <option value="any">Any (public read/write)</option>
+              <option value="users">Authenticated users</option>
+              <option value="owner">Owner only (document creator)</option>
+            </select>
+          </div>
+
+          {/* Fields */}
+          <label className="mb-1 block text-[10px] text-[#97979B]">Fields</label>
           {(collection.fields || []).map((field, i) => (
             <div
               key={i}
@@ -106,6 +123,57 @@ function CollectionEditor({ collection, onUpdate, onRemove }) {
           >
             + Add field
           </button>
+
+          {/* Indexes */}
+          <div className="mt-3">
+            <label className="mb-1 block text-[10px] text-[#97979B]">Indexes</label>
+            {(collection.indexes || []).map((idx, i) => (
+              <div key={i} className="mb-1.5 flex items-center gap-1.5">
+                <select
+                  value={idx.type || "key"}
+                  onChange={(e) => {
+                    const indexes = [...(collection.indexes || [])];
+                    indexes[i] = { ...indexes[i], type: e.target.value };
+                    onUpdate({ ...collection, indexes });
+                  }}
+                  className="rounded border border-[#EDEDF0] bg-white px-1.5 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#6C5CE7]"
+                >
+                  <option value="key">Key</option>
+                  <option value="unique">Unique</option>
+                  <option value="fulltext">Fulltext</option>
+                </select>
+                <input
+                  type="text"
+                  value={(idx.attributes || []).join(", ")}
+                  onChange={(e) => {
+                    const indexes = [...(collection.indexes || [])];
+                    indexes[i] = { ...indexes[i], attributes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) };
+                    onUpdate({ ...collection, indexes });
+                  }}
+                  placeholder="field1, field2"
+                  className="flex-1 rounded border border-[#EDEDF0] px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#6C5CE7] placeholder:text-[#D8D8DB]"
+                />
+                <button
+                  onClick={() => {
+                    const indexes = (collection.indexes || []).filter((_, j) => j !== i);
+                    onUpdate({ ...collection, indexes });
+                  }}
+                  className="cursor-pointer text-xs text-[#D8D8DB] hover:text-[#B31212]"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => {
+                const indexes = [...(collection.indexes || []), { type: "key", attributes: [] }];
+                onUpdate({ ...collection, indexes });
+              }}
+              className="cursor-pointer text-xs text-[#6C5CE7] hover:underline"
+            >
+              + Add index
+            </button>
+          </div>
         </div>
       )}
     </div>

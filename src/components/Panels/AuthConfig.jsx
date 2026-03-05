@@ -63,6 +63,59 @@ export default function AuthConfig({ config, onChange }) {
           </div>
         </label>
       </div>
+
+      {/* Session Duration */}
+      <div>
+        <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#97979B]">
+          Session Duration (days)
+        </label>
+        <input
+          type="number"
+          min={1}
+          max={365}
+          value={config.sessionDuration || 365}
+          onChange={(e) => onChange({ sessionDuration: Number(e.target.value) })}
+          className="w-full rounded border border-[#EDEDF0] px-2 py-1.5 text-sm text-[#2D2D31] outline-none focus:border-[#FD366E]"
+        />
+      </div>
+
+      {/* Password Policy */}
+      <div>
+        <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#97979B]">
+          Password Policy
+        </label>
+        <div className="flex flex-col gap-2">
+          <div>
+            <label className="mb-1 block text-[10px] text-[#97979B]">Min length</label>
+            <input
+              type="number"
+              min={1}
+              max={128}
+              value={config.passwordPolicy?.minLength || 8}
+              onChange={(e) => onChange({ passwordPolicy: { ...(config.passwordPolicy || {}), minLength: Number(e.target.value) } })}
+              className="w-full rounded border border-[#EDEDF0] px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#FD366E]"
+            />
+          </div>
+          {[
+            { key: "uppercase", label: "Require uppercase" },
+            { key: "numbers", label: "Require numbers" },
+            { key: "specialChars", label: "Require special characters" },
+          ].map((opt) => (
+            <label
+              key={opt.key}
+              className="flex cursor-pointer items-center gap-2 rounded-md border border-[#EDEDF0] px-3 py-1.5 hover:bg-[#FAFAFB]"
+            >
+              <input
+                type="checkbox"
+                checked={config.passwordPolicy?.[opt.key] || false}
+                onChange={(e) => onChange({ passwordPolicy: { ...(config.passwordPolicy || {}), [opt.key]: e.target.checked } })}
+                className="accent-[#FD366E]"
+              />
+              <span className="text-xs text-[#2D2D31]">{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -46,6 +46,8 @@ export function compileToIR(nodes, edges) {
         ir.auth = {
           providers: config.providers || [],
           guestAccess: config.guestAccess || false,
+          sessionDuration: config.sessionDuration || 365,
+          passwordPolicy: config.passwordPolicy || { minLength: 8, uppercase: false, numbers: false, specialChars: false },
         };
         break;
 
@@ -62,7 +64,14 @@ export function compileToIR(nodes, edges) {
                 name: f.name,
                 type: f.type || "string",
                 required: f.required || false,
+                ...(f.relatedCollection ? { relatedCollection: f.relatedCollection } : {}),
+                ...(f.relationType ? { relationType: f.relationType } : {}),
               })),
+            indexes: (c.indexes || []).map((idx) => ({
+              type: idx.type || "key",
+              attributes: idx.attributes || [],
+            })),
+            permissionPreset: c.permissionPreset || "users",
           }));
 
         if (ir.database) {
@@ -81,6 +90,7 @@ export function compileToIR(nodes, edges) {
             id: slugify(b.name),
             allowedTypes: b.allowedTypes || [],
             maxSize: b.maxSize || null,
+            permissionPreset: b.permissionPreset || "auth_read",
           }));
 
         if (ir.storage) {
@@ -100,6 +110,11 @@ export function compileToIR(nodes, edges) {
             trigger: f.trigger || "http",
             runtime: f.runtime || "node-18.0",
             schedule: f.schedule || undefined,
+            envVars: (f.envVars || []).filter((e) => e.key),
+            timeout: f.timeout || 15,
+            memory: f.memory || 128,
+            connectedCollections: [],
+            connectedBuckets: [],
           }));
         ir.functions.push(...fns);
         break;
@@ -140,6 +155,26 @@ export function compileToIR(nodes, edges) {
         semantic: semantic.semantic,
         meaning: semantic.meaning,
       });
+    }
+  }
+
+  // Derive function→database and function→storage connections
+  if (ir.functions.length > 0) {
+    const fnToDB = ir.connections.filter(
+      (c) => c.sourceType === "functions" && c.targetType === "database"
+    );
+    const fnToStorage = ir.connections.filter(
+      (c) => c.sourceType === "functions" && c.targetType === "storage"
+    );
+    if (fnToDB.length > 0 && ir.database) {
+      for (const fn of ir.functions) {
+        fn.connectedCollections = ir.database.collections.map((c) => c.id);
+      }
+    }
+    if (fnToStorage.length > 0 && ir.storage) {
+      for (const fn of ir.functions) {
+        fn.connectedBuckets = ir.storage.buckets.map((b) => b.id);
+      }
     }
   }
 

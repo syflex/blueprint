@@ -18,6 +18,8 @@
  * @typedef {Object} AuthIR
  * @property {string[]} providers
  * @property {boolean} guestAccess
+ * @property {number} [sessionDuration] - days
+ * @property {{ minLength: number, uppercase: boolean, numbers: boolean, specialChars: boolean }} [passwordPolicy]
  *
  * @typedef {Object} DatabaseIR
  * @property {CollectionIR[]} collections
@@ -26,11 +28,19 @@
  * @property {string} name
  * @property {string} id - slugified from name
  * @property {FieldIR[]} fields
+ * @property {IndexIR[]} [indexes]
+ * @property {string} [permissionPreset] - "any" | "users" | "owner"
  *
  * @typedef {Object} FieldIR
  * @property {string} name
  * @property {string} type - one of fieldTypes values
  * @property {boolean} required
+ * @property {string} [relatedCollection] - target collection ID for relationship fields
+ * @property {string} [relationType] - "oneToOne" | "oneToMany" | "manyToOne" | "manyToMany"
+ *
+ * @typedef {Object} IndexIR
+ * @property {string} type - "key" | "unique" | "fulltext"
+ * @property {string[]} attributes
  *
  * @typedef {Object} StorageIR
  * @property {BucketIR[]} buckets
@@ -40,6 +50,7 @@
  * @property {string} id - slugified from name
  * @property {string[]} allowedTypes
  * @property {number|null} maxSize
+ * @property {string} [permissionPreset] - "public_read" | "auth_read" | "admin_only"
  *
  * @typedef {Object} FunctionIR
  * @property {string} name
@@ -47,6 +58,11 @@
  * @property {string} trigger - "http" | "schedule" | "event"
  * @property {string} runtime
  * @property {string} [schedule] - CRON string if trigger is "schedule"
+ * @property {{ key: string, value: string }[]} [envVars]
+ * @property {number} [timeout] - seconds (1-900)
+ * @property {number} [memory] - MB (128/256/512/1024)
+ * @property {string[]} [connectedCollections] - derived from function→database connections
+ * @property {string[]} [connectedBuckets] - derived from function→storage connections
  *
  * @typedef {Object} RealtimeIR
  * @property {boolean} autoSubscribe

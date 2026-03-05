@@ -72,6 +72,28 @@ export function validateIR(ir) {
     }
   }
 
+  // Functions with crud connections but no database
+  const hasFnToDB = ir.connections.some(
+    (c) => c.sourceType === "functions" && c.targetType === "database"
+  );
+  if (hasFnToDB && !ir.database) {
+    issues.push({
+      level: "warning",
+      message: "Functions connected to Database but no Database node with collections exists",
+    });
+  }
+
+  // Functions with file connections but no storage
+  const hasFnToStorage = ir.connections.some(
+    (c) => c.sourceType === "functions" && c.targetType === "storage"
+  );
+  if (hasFnToStorage && !ir.storage) {
+    issues.push({
+      level: "warning",
+      message: "Functions connected to Storage but no Storage node with buckets exists",
+    });
+  }
+
   // Messaging requires functions connection
   if (ir.messaging) {
     const hasFnToMsg = ir.connections.some(

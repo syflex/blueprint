@@ -55,7 +55,7 @@ export function useStorage(bucketId: string) {
   });
 
   // Bucket setup script
-  let setupScript = `import { Client, Storage } from "node-appwrite";
+  let setupScript = `import { Client, Storage, Permission, Role } from "node-appwrite";
 
 const client = new Client()
   .setEndpoint(process.env.APPWRITE_ENDPOINT!)
@@ -77,6 +77,15 @@ async function setup() {
     }
     if (bucket.maxSize) {
       setupScript += `      maximumFileSize: ${bucket.maxSize},\n`;
+    }
+    // Permissions
+    const perm = bucket.permissionPreset || "auth_read";
+    if (perm === "public_read") {
+      setupScript += `      permissions: [Permission.read(Role.any()), Permission.write(Role.users())],\n`;
+    } else if (perm === "admin_only") {
+      setupScript += `      permissions: [],\n`;
+    } else {
+      setupScript += `      permissions: [Permission.read(Role.users()), Permission.write(Role.users())],\n`;
     }
     setupScript += `    });\n`;
     setupScript += `    console.log("Created bucket: ${bucket.name}");\n`;

@@ -11,9 +11,9 @@ export const router = createBrowserRouter([
   {
     element: <AppShell />,
     children: [
-      { path: "/", element: <LandingPage /> },
+      { path: "/", element: <CanvasPage /> },
+      { path: "/about", element: <LandingPage /> },
       { path: "/login", element: <AuthPage /> },
-      { path: "/canvas", element: <CanvasPage /> },
       { path: "/canvas/:projectId", element: <CanvasPage /> },
       {
         path: "/dashboard",

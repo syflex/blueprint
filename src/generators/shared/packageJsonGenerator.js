@@ -8,6 +8,11 @@ export function generatePackageJson(ir) {
     "react-dom": "^19.0.0",
   };
 
+  // Add zod for validation schemas when database has collections
+  if (ir.database && ir.database.collections.length > 0) {
+    deps.zod = "^3.23.0";
+  }
+
   const pkg = {
     name: "blueprint-project",
     private: true,

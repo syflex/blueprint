@@ -1,12 +1,20 @@
 import { componentRegistry, componentTypes } from "../../registry/componentRegistry";
 import { useCanvasStore } from "../../store/canvasStore";
+import { useUiStore } from "../../store/uiStore";
 
 export default function ComponentLibrary() {
   const nodes = useCanvasStore((s) => s.nodes);
+  const clearCanvas = useCanvasStore((s) => s.clearCanvas);
+  const setShowTemplatePicker = useUiStore((s) => s.setShowTemplatePicker);
 
   function onDragStart(e, type) {
     e.dataTransfer.setData("application/blueprint-node", type);
     e.dataTransfer.effectAllowed = "move";
+  }
+
+  function handleTemplates() {
+    clearCanvas();
+    setShowTemplatePicker(true);
   }
 
   return (
@@ -16,7 +24,7 @@ export default function ComponentLibrary() {
           Components
         </h2>
       </div>
-      <div className="flex flex-col gap-1.5 overflow-y-auto p-3">
+      <div className="flex flex-1 flex-col gap-1.5 overflow-y-auto p-3">
         {componentTypes.map((type) => {
           const def = componentRegistry[type];
           const count = nodes.filter((n) => n.data.componentType === type).length;
@@ -58,6 +66,15 @@ export default function ComponentLibrary() {
             </div>
           );
         })}
+      </div>
+      <div className="border-t border-[#EDEDF0] p-3">
+        <button
+          onClick={handleTemplates}
+          className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-dashed border-[#D8D8DB] px-3 py-2 text-xs text-[#97979B] transition-colors hover:border-[#FD366E] hover:text-[#FD366E]"
+        >
+          <span className="icon-grid text-[10px]" />
+          Start from Template
+        </button>
       </div>
     </div>
   );

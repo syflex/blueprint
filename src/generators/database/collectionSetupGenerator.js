@@ -23,7 +23,7 @@ export function generateCollectionSetup(databaseIR) {
 
   const collections = databaseIR.collections;
 
-  let script = `import { Client, Databases, ID } from "node-appwrite";
+  let script = `import { Client, Databases, ID, Permission, Role } from "node-appwrite";
 
 const client = new Client()
   .setEndpoint(process.env.APPWRITE_ENDPOINT!)
@@ -48,10 +48,25 @@ async function setup() {
   for (const col of collections) {
     script += `  // Collection: ${col.name}\n`;
     script += `  try {\n`;
+    // Build permissions based on preset
+    const permPreset = col.permissionPreset || "users";
+    let permissionsCode;
+    if (permPreset === "any") {
+      permissionsCode = `[Permission.read(Role.any()), Permission.write(Role.any())]`;
+    } else if (permPreset === "owner") {
+      permissionsCode = `[Permission.read(Role.users()), Permission.create(Role.users()), Permission.update(Role.user("OWNER")), Permission.delete(Role.user("OWNER"))]`;
+    } else {
+      permissionsCode = `[Permission.read(Role.users()), Permission.write(Role.users())]`;
+    }
+
     script += `    await databases.createCollection({\n`;
     script += `      databaseId: DATABASE_ID,\n`;
     script += `      collectionId: "${col.id}",\n`;
     script += `      name: "${col.name}",\n`;
+    script += `      permissions: ${permissionsCode},\n`;
+    if (permPreset === "owner") {
+      script += `      documentSecurity: true,\n`;
+    }
     script += `    });\n`;
     script += `    console.log("Created collection: ${col.name}");\n`;
     script += `  } catch (e: any) {\n`;
@@ -71,6 +86,23 @@ async function setup() {
       }
       script += `  });\n`;
       script += `  console.log("  Added field: ${field.name} (${field.type})");\n\n`;
+    }
+
+    // Generate indexes
+    if (col.indexes && col.indexes.length > 0) {
+      for (let idx = 0; idx < col.indexes.length; idx++) {
+        const index = col.indexes[idx];
+        if (index.attributes.length > 0) {
+          script += `  await databases.createIndex({\n`;
+          script += `    databaseId: DATABASE_ID,\n`;
+          script += `    collectionId: "${col.id}",\n`;
+          script += `    key: "idx_${col.id}_${idx}",\n`;
+          script += `    type: "${index.type}",\n`;
+          script += `    attributes: ${JSON.stringify(index.attributes)},\n`;
+          script += `  });\n`;
+          script += `  console.log("  Created ${index.type} index on: ${index.attributes.join(", ")}");\n\n`;
+        }
+      }
     }
   }
 

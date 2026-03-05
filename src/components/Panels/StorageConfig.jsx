@@ -39,6 +39,18 @@ function BucketEditor({ bucket, onUpdate, onRemove }) {
       {expanded && (
         <div className="flex flex-col gap-2 border-t border-[#EDEDF0] px-3 py-2">
           <div>
+            <label className="mb-1 block text-[10px] text-[#97979B]">Permissions</label>
+            <select
+              value={bucket.permissionPreset || "auth_read"}
+              onChange={(e) => onUpdate({ ...bucket, permissionPreset: e.target.value })}
+              className="w-full rounded border border-[#EDEDF0] bg-white px-2 py-1 text-xs text-[#2D2D31] outline-none focus:border-[#00B894]"
+            >
+              <option value="public_read">Public read (anyone can download)</option>
+              <option value="auth_read">Authenticated read</option>
+              <option value="admin_only">Admin only</option>
+            </select>
+          </div>
+          <div>
             <label className="mb-1 block text-[10px] text-[#97979B]">
               Allowed file types (comma-separated)
             </label>

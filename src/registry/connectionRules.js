@@ -8,15 +8,18 @@ export const validConnections = {
     storage: { semantic: "auth_permissions", meaning: "Apply auth-based permissions to buckets" },
     functions: { semantic: "auth_context", meaning: "Pass user context to function execution" },
   },
-  database: {
-    realtime: { semantic: "collection_subscriptions", meaning: "Subscribe to document changes in real time" },
-    functions: { semantic: "event_trigger", meaning: "Trigger function on document create/update/delete" },
-  },
   storage: {
     functions: { semantic: "event_trigger", meaning: "Trigger function on file upload/delete" },
   },
   functions: {
     messaging: { semantic: "send_notification", meaning: "Function sends email/push/SMS via Messaging" },
+    database: { semantic: "crud_operations", meaning: "Function reads/writes documents in collections" },
+    storage: { semantic: "file_operations", meaning: "Function reads/writes files in buckets" },
+  },
+  database: {
+    realtime: { semantic: "collection_subscriptions", meaning: "Subscribe to document changes in real time" },
+    functions: { semantic: "event_trigger", meaning: "Trigger function on document create/update/delete" },
+    storage: { semantic: "file_references", meaning: "Collection fields reference files in buckets" },
   },
   realtime: {},
   messaging: {},
@@ -54,7 +57,7 @@ export function getConnectionError(sourceType, targetType) {
     "realtime->auth": "Realtime consumes events, it doesn't produce auth",
     "realtime->database": "Realtime reads from Database, it doesn't write to it",
     "messaging->database": "Messaging is an output — it doesn't feed data back",
-    "storage->database": "No direct link — use Functions as a bridge",
+    "storage->auth": "Storage doesn't manage authentication",
     "storage->realtime": "No direct link — use Database events instead",
   };
 
